@@ -3,10 +3,10 @@ This is a weekend project with which you can transform your regular stairs
 to colorful and interesting ones.
 
 Mode 1:<br>
-![hippo](https://media3.giphy.com/media/pCiAbg1STxCVZDqOvM/giphy.gif)
+![mode1](https://media3.giphy.com/media/pCiAbg1STxCVZDqOvM/giphy.gif)
 
 Mode 2:<br>
-![hippo](https://media2.giphy.com/media/ZirmPwlMluUNjLOXdL/giphy.gif)
+![mode2](https://media2.giphy.com/media/ZirmPwlMluUNjLOXdL/giphy.gif)
 
 ## Hardware
 You will need:
@@ -59,7 +59,7 @@ Connect controler to power supply, but pay attention that LED strips and
 controler MUST USE common GND. If you use same power supply for LED strips and
 controler as I did, then you should not have any issues.
 
-![hippo](https://i.imgur.com/oSfle5k.png)
+![scheme](https://i.imgur.com/oSfle5k.png)
 
 ## Software
 All software is written in Arduino studio.
