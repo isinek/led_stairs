@@ -2,7 +2,6 @@
 #include <FastLED.h>
 
 // #define DEBUG
-// #define RAINBOW
 
 #define N_STAIRS      15
 #define N_LEDS        26
@@ -23,7 +22,6 @@ CRGB stairs[N_STAIRS][N_LEDS];
 uint8_t pins[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1, A2};
 double progress = 0;
 
-#ifdef RAINBOW
 void nextInColorWheel(CRGB *color, uint8_t step=15) {
   if (color->blue == 0 && color->red < 255) {
     color->red = (((int)color->red) + step > 255) ? 255: color->red + step;
@@ -72,41 +70,6 @@ void rainbow_loop()
   FastLED.show();
   delay(25);
 }
-#else
-void motion_loop()
-{
-  uint8_t i, j, stair_perc;
-  int sens;
-  int8_t brightness = 0;
-
-  sens = digitalRead(SENSOR_PIN_1);
-#ifdef DEBUG
-  Serial.print("sens: ");
-  Serial.println(sens);
-#endif
-  if (sens == HIGH || (progress > 0 && progress < 100))
-    progress += PROGRESS_STEP;
-  else
-    progress = 0;
-
-  for (i = 0; i < N_STAIRS; ++i) {
-    stair_perc = i*100/(N_STAIRS + 2);
-    brightness = LIGHT_SPREAD - abs(progress - stair_perc);
-    brightness = (brightness > 0 && progress)*brightness;
-
-    for (j = 0; j < N_LEDS; ++j)
-      stairs[i][j] = CRGB(255*(brightness/LIGHT_SPREAD), 255*(brightness/LIGHT_SPREAD), 255*(brightness/LIGHT_SPREAD));
-  }
-
-  FastLED.show();
-  if (progress == PROGRESS_STEP)
-    delay(2000);
-  else if (progress > 45 && progress < 47)
-    delay(30);
-  delay(15);
-}
-#endif
-
 
 void setup()
 {
@@ -140,11 +103,9 @@ void setup()
   FastLED.clear();
   FastLED.show();
 
-#ifdef RAINBOW
   initHorizontalRainbow();
   // initVerticalRainbow();
   FastLED.show();
-#endif
 
 #ifdef DEBUG
   Serial.println("Init done");
@@ -153,9 +114,5 @@ void setup()
 
 void loop()
 {
-#ifdef RAINBOW
   rainbow_loop();
-#else
-  motion_loop();
-#endif
 }
