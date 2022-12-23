@@ -3,10 +3,10 @@ This is a weekend project with which you can transform your regular stairs
 to colorful and interesting ones.
 
 Mode 1:<br>
-![mode1](https://media4.giphy.com/media/pCiAbg1STxCVZDqOvM/giphy.gif)
+![mode1](https://media0.giphy.com/media/pCiAbg1STxCVZDqOvM/giphy.gif)
 
 Mode 2:<br>
-![mode2](https://media2.giphy.com/media/ZirmPwlMluUNjLOXdL/giphy.gif)
+![mode2](https://media3.giphy.com/media/ZirmPwlMluUNjLOXdL/giphy.gif)
 
 ## Hardware
 You will need:
@@ -69,3 +69,14 @@ in Arduino studio.
 Use defined values to configure number of stairs, LEDs, pins, sensors...
 By default code works in "Mode 1". If you want to see the rainbow, use define
 RAINBOW.
+
+## Behind the scenes
+A lot of you had questions where are the wires and how everything is connected.
+So, here are a few pictures from time when I built it.
+
+![wire channels 1](https://i.imgur.com/ToM3y4Q.jpg)
+![wire channels 2](https://i.imgur.com/kQHY2Qe.jpg)
+![first working stair](https://media1.giphy.com/media/sjK1mkJiYoAwqVF0lY/giphy.gif)
+![connecting in process](https://media4.giphy.com/media/eIw58Bao9Jf5gOsZTf/giphy.gif)
+![everything connected](https://i.imgur.com/iqjxN7O.jpg)
+![all hidden](https://i.imgur.com/5nsRgP8.jpg)
