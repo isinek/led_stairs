@@ -1,12 +1,8 @@
-# LED Stairs
+# XMAS LED Stairs
 This is a weekend project with which you can transform your regular stairs
 to colorful and interesting ones.
 
-Mode 1:<br>
-![mode1](https://media4.giphy.com/media/pCiAbg1STxCVZDqOvM/giphy.gif)
-
-Mode 2:<br>
-![mode2](https://media2.giphy.com/media/ZirmPwlMluUNjLOXdL/giphy.gif)
+![XMAS stairs](https://media1.giphy.com/media/Wdck1yC1na2kkP1a5O/giphy.gif)
 
 ## Hardware
 You will need:

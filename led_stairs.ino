@@ -1,8 +1,7 @@
 #include <Arduino.h>
 #include <FastLED.h>
 
-// #define DEBUG
-// #define RAINBOW
+// define DEBUG
 
 #define N_STAIRS      15
 #define N_LEDS        26
@@ -16,105 +15,43 @@
 #define SENSOR_PIN_1  A5
 #define SENSOR_PIN_2  A4
 
-#define LIGHT_SPREAD  20.0
-#define PROGRESS_STEP 0.3
+#define MAX_COUNTER(step)     ((255/step)*2 - 1)
+#define LIGHT_INT(n, c, step) (n > 255/step ? c - (n*c/(255/step) - c): n*c/(255/step))
+#define COLOR(n, step)        CRGB(LIGHT_INT(n, 255, step), LIGHT_INT(n, 120, step), LIGHT_INT(n, 20, step))
 
 CRGB stairs[N_STAIRS][N_LEDS];
 uint8_t pins[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, A0, A1, A2};
-double progress = 0;
+uint32_t counter = 0;
+uint8_t loops = 1;
+uint8_t step = 5;
+bool odd = false;
 
-#ifdef RAINBOW
-void nextInColorWheel(CRGB *color, uint8_t step=15) {
-  if (color->blue == 0 && color->red < 255) {
-    color->red = (((int)color->red) + step > 255) ? 255: color->red + step;
-    color->green = (((int)color->green) - step < 0) ? 0: color->green - step;
-  } else if ((*color)[1] == 0 && (*color).blue < 255) {
-    color->blue = (((int)color->blue) + step > 255) ? 255: color->blue + step;
-    color->red = (((int)color->red) - step < 0) ? 0: color->red - step;
-  } else {
-    color->red = 0;
-    color->green = (((int)color->green) + step > 255) ? 255: color->green + step;
-    color->blue = (((int)color->blue) - step < 0) ? 0: color->blue - step;
-  }
-}
-
-void initHorizontalRainbow() {
-  CRGB color;
-
-  for (uint8_t i = 0; i < N_STAIRS; ++i) {
-    color = CRGB(255, 0, 0);
-    for (uint8_t j = 0; j < N_LEDS; ++j) {
-      stairs[i][j] = color;
-      nextInColorWheel(&color);
-    }
-  }
-}
-
-void initVerticalRainbow() {
-  CRGB color;
-
-  for (uint8_t i = 0; i < N_STAIRS; ++i) {
-    color = CRGB(255, 0, 0);
-    for (uint8_t j = 0; j < N_LEDS; ++j)
-      stairs[i][j] = color;
-    nextInColorWheel(&color);
-  }
-}
-
-void rainbow_loop()
+void xmas_loop()
 {
-  uint8_t i, j;
-
-  for (i = 0; i < N_STAIRS; ++i)
-    for (j = 0; j < N_LEDS; ++j)
-      nextInColorWheel(&stairs[i][j]);
-
-  FastLED.show();
-  delay(25);
-}
-#else
-void motion_loop()
-{
-  uint8_t i, j, stair_perc;
-  int sens;
-  int8_t brightness = 0;
-
-  sens = digitalRead(SENSOR_PIN_1);
-#ifdef DEBUG
-  Serial.print("sens: ");
-  Serial.println(sens);
-#endif
-  if (sens == HIGH || (progress > 0 && progress < 100))
-    progress += PROGRESS_STEP;
-  else
-    progress = 0;
+  uint32_t i, j;
 
   for (i = 0; i < N_STAIRS; ++i) {
-    stair_perc = i*100/(N_STAIRS + 2);
-    brightness = LIGHT_SPREAD - abs(progress - stair_perc);
-    brightness = (brightness > 0 && progress)*brightness;
-
-    for (j = 0; j < N_LEDS; ++j)
-      stairs[i][j] = CRGB(255*(brightness/LIGHT_SPREAD), 255*(brightness/LIGHT_SPREAD), 255*(brightness/LIGHT_SPREAD));
+    for (j = 0; j < N_LEDS; j += 2) {
+      if ((j/2)%2 == odd)
+        stairs[i][j] = COLOR(counter, step);
+      else
+        stairs[i][j] = CRGB(0, 0, 0);
+    }
   }
 
   FastLED.show();
-  if (progress == PROGRESS_STEP)
-    delay(2000);
-  else if (progress > 45 && progress < 47)
-    delay(30);
-  delay(15);
+  delay(5);
 }
-#endif
-
 
 void setup()
 {
+  uint32_t i, j;
+  uint32_t r;
 #ifdef DEBUG
   Serial.begin(9600);
 #endif
 
-  for (uint8_t i = 0; i < N_STAIRS; ++i)
+  for (i = 0; i < N_STAIRS; ++i)
     pinMode(pins[i], OUTPUT);
 
   pinMode(SENSOR_PIN_1, INPUT);
@@ -136,15 +73,9 @@ void setup()
   FastLED.addLeds<CHIPSET, A2, COLOR_ORDER>(stairs[14], N_LEDS);
 
   FastLED.setMaxPowerInVoltsAndMilliamps(VOLTS, MAX_MAMPS);
-  FastLED.setBrightness(30);
+  FastLED.setBrightness(40);
   FastLED.clear();
   FastLED.show();
-
-#ifdef RAINBOW
-  initHorizontalRainbow();
-  // initVerticalRainbow();
-  FastLED.show();
-#endif
 
 #ifdef DEBUG
   Serial.println("Init done");
@@ -153,9 +84,14 @@ void setup()
 
 void loop()
 {
-#ifdef RAINBOW
-  rainbow_loop();
-#else
-  motion_loop();
-#endif
+  counter = (counter + 1)%MAX_COUNTER(step);
+  odd = (odd + !counter)%2;
+  loops -= !odd && !counter;
+  
+  if (!counter && !loops) {
+    step = random(5, 64);
+    loops = step/4;
+  }
+
+  xmas_loop();
 }
