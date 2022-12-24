@@ -32,7 +32,7 @@ void xmas_loop()
 
   for (i = 0; i < N_STAIRS; ++i) {
     for (j = 0; j < N_LEDS; j += 2) {
-      if ((j/2)%2 == odd)
+      if ((j/2 + i)%2 == odd)
         stairs[i][j] = COLOR(counter, step);
       else
         stairs[i][j] = CRGB(0, 0, 0);
